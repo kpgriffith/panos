@@ -10,3 +10,13 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 end
+
+RSpec::Matchers.define :be_a do
+  match do |actual|
+    actual.is_a? Proc
+  end
+
+  def supports_block_expectations?
+    true
+  end
+end

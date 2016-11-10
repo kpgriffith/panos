@@ -1,11 +1,13 @@
 require 'spec_helper'
 require 'panos/models/key'
 
+include Panos
+
 describe 'Key' do
   context 'value' do
     it 'succeeds when not nil' do
       key = Key.new('key')
-      expect(key).to be_a Key
+      expect{key}.to be_a Key
     end
 
     it 'fails when nil' do
