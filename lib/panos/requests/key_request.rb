@@ -1,42 +1,32 @@
 require 'panos/models/key'
-# require File.expand_path('../../models/key.rb', __FILE__)
 
-class KeyRequest
+module Panos
+  class KeyRequest
 
-  def initialize(url, userid, password)
-    fail ArgumentError, 'url cannot be nil' if url.nil?
-    fail ArgumentError, 'userid cannot be nil' if userid.nil?
-    fail ArgumentError, 'password cannot be nil' if password.nil?
-
-    @url = url
-    @userid = userid
-    @password = password
-  end
-
-  def getkey()
-    begin
-      key_response = RestClient::Request.execute(
-        :method => :get,
-        :verify_ssl => false,
-        :url => @url,
-        :headers => {
-          :params => {
-            :type => 'keygen',
-            :user => @userid,
-            :password => @password
+    def get(endpoint, user, password)
+      begin
+        key_response = RestClient::Request.execute(
+          :method => :get,
+          :verify_ssl => false,
+          :url => endpoint,
+          :headers => {
+            :params => {
+              :type => 'keygen',
+              :user => user,
+              :password => password
+            }
           }
-        }
-      )
-      # parse the xml to get the key
-      key_hash = Crack::XML.parse(key_response)
+        )
+        # parse the xml to get the key
+        key_hash = Crack::XML.parse(key_response)
+        raise Exception.new("PANOS Error getting key: #{key_hash['response']['result']['msg']}") if key_hash['response']['status'] == 'error'
 
-      raise Exception.new("PANOS Error getting key: #{key_hash['response']['msg']}") if key_hash['response']['status'] == 'error'
-
-      key = Key.new(key_hash['response']['result']['key'])
-      return key
-    rescue => e
-      raise Exception.new("Excpetion getting key: #{e}")
+        key = Key.new(key_hash['response']['result']['key'])
+        return key
+      rescue => e
+        raise Exception.new("Excpetion getting key: #{e}")
+      end
     end
-  end
 
+  end
 end
