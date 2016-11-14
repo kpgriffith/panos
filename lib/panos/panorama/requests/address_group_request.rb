@@ -1,6 +1,7 @@
 require 'panos/models/key'
 require 'panos/panorama/models/address_group'
 require 'panos/panorama/models/address'
+require 'panos'
 
 module Panos
   module Panorama
@@ -22,10 +23,10 @@ module Panos
         	set_ag_response = RestClient::Request.execute(
         		:method => :post,
         		:verify_ssl => false,
-        		:url => @baseurl,
+        		:url => $baseurl,
         		:headers => {
         			:params => {
-        				:key => @key.value,
+        				:key => $key.value,
         				:type => 'config',
         				:action => 'set',
         				:xpath => "/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='#{address_group.device_group}']/address-group",
@@ -47,10 +48,10 @@ module Panos
         	delete_ag_response = RestClient::Request.execute(
         		:method => :post,
         		:verify_ssl => false,
-        		:url => @baseurl,
+        		:url => $baseurl,
         		:headers => {
         			:params => {
-        				:key => @key.value,
+        				:key => $key.value,
         				:type => 'config',
         				:action => 'delete',
                 :xpath => "/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='#{address_group.device_group}']/address-group/entry[@name='#{address_group.name}']"

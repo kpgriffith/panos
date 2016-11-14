@@ -18,7 +18,7 @@ describe 'Key Request' do
       expect{@keyrequest.get('url','username','password')}.to be_a Key
     end
 
-    it 'returns an error' do
+    it 'returns an exception' do
       allow(RestClient::Request).to receive(:execute).and_raise(Exception)
       expect{@keyrequest.get('url','user','password')}.to raise_error(Exception)
     end
