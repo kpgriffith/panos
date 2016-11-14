@@ -16,9 +16,10 @@ module Panos
     fail ArgumentError, 'password cannot be nil' if password.nil?
 
     key_request = KeyRequest.new
-    @@key = key_request.get(endpoint, user, password)
-    @@baseurl = endpoint
+    $key = key_request.get(endpoint, user, password)
+    $baseurl = endpoint
   end
 
   module_function :get_key
+
 end
