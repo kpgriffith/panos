@@ -10,10 +10,10 @@ module Panos
           tag_response = RestClient::Request.execute(
             :method => :post,
             :verify_ssl => false,
-            :url => @baseurl,
+            :url => $baseurl,
             :headers => {
               :params => {
-                :key => @key.value,
+                :key => $key.value,
                 :type => 'config',
                 :action => 'set',
                 :xpath => "/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='#{device_group}']/tag",
