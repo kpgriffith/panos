@@ -1,5 +1,6 @@
 require 'panos/models/key'
 require 'panos/models/job'
+require 'panos'
 
 module Panos
   module Panorama
@@ -11,10 +12,10 @@ module Panos
           commit_response = RestClient::Request.execute(
             :method => :post,
             :verify_ssl => false,
-            :url => @baseurl,
+            :url => $baseurl,
             :headers => {
               :params => {
-                :key => @key.value,
+                :key => $key.value,
                 :type => 'commit',
                 :action => 'all',
                 :cmd => "<commit-all><shared-policy><device-group><entry name=\"#{device_group}\"/></device-group></shared-policy></commit-all>"
@@ -31,10 +32,9 @@ module Panos
               raise Exception.new("PANOS Error committing: #{commit_hash['response']['msg']}")
             end
           end
-
           if commit_hash['response'].has_key?('result')
             # if job exists in the payload that means a job was submitted to commit the changes.
-            if commit_hash['response']['result'].has_key?('job')
+            if !commit_hash['response']['result'].nil? && commit_hash['response']['result'].has_key?('job')
               job = Job.new(commit_hash['response']['result']['job'].to_i)
               return job
             else
