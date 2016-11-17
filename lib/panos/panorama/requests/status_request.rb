@@ -1,6 +1,7 @@
 require 'panos/models/key'
 require 'panos/models/job'
 require 'panos/panorama/models/status'
+require 'panos'
 
 module Panos
   module Panorama
@@ -12,10 +13,10 @@ module Panos
           status_response = RestClient::Request.execute(
             :method => :post,
             :verify_ssl => false,
-            :url => @baseurl,
+            :url => $baseurl,
             :headers => {
               :params => {
-                :key => @key.value,
+                :key => $key.value,
                 :type => 'op',
                 :cmd => "<show><jobs><id>#{jobid}</id></jobs></show>"
               }
@@ -36,7 +37,7 @@ module Panos
       end
 
       def job_complete?(job)
-        fail ArgumentError, 'job must be of type Panos::Job' if !job.is_a? Job
+        fail ArgumentError, 'job must be of type Panos::Job' unless job.is_a? Job
 
         status = get_status(job.id)
         if status.status == 'FIN' && status.progress == 100
@@ -115,22 +116,6 @@ module Panos
           return false
         end
       end
-
-      # def job_complete?(job)
-      #   fail ArgumentError, 'job must be of type Panos::Job' if !job.is_a? Job
-      #
-      #   status = get_status(job.id)
-      #   if status.status == 'FIN' && status.progress == 100
-      #     if status.result == 'OK'
-      #       return true
-      #     else
-      #       raise Exception.new("Job completed but failed: #{status}")
-      #     end
-      #   else
-      #     return false
-      #   end
-      # end
-
     end
 
   end
